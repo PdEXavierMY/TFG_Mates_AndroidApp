@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TFGMates</string>
+    <string name="ScrollViewMainScreenDescription">Interfaz para mostrar a los robots previamente accedidos.</string>
+</resources>
