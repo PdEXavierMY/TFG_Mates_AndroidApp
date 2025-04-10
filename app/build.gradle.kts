@@ -42,10 +42,16 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    //Http
+    implementation(libs.okhttp)
     //Room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
+    //Vosk
+    implementation(project(":models"))
+    implementation(libs.alphacephei.vosk.android)
+    implementation("net.java.dev.jna:jna:5.17.0@aar")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

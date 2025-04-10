@@ -20,4 +20,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "TFGMates"
-include(":app")
+include(":app", ":models")
