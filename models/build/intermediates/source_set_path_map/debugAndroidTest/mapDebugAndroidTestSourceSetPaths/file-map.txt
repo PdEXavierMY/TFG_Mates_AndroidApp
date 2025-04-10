@@ -1,0 +1,5 @@
+com.example.tfgmates.models.test.models-androidTest-0 C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\generated\res\resValues\androidTest\debug
+com.example.tfgmates.models.test.models-mergeDebugAndroidTestResources-1 C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.example.tfgmates.models.test.models-mergeDebugAndroidTestResources-2 C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.example.tfgmates.models.test.models-debugAndroidTest-3 C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources
+com.example.tfgmates.models.test.models-debug-4 C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\packaged_res\debug\packageDebugResources
