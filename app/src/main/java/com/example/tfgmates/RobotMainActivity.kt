@@ -5,17 +5,18 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.tfgmates.bbdd.AppDatabase
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
 
 class RobotMainActivity : AppCompatActivity() {
 
     private lateinit var btnIrAtras: Button
+    private lateinit var btnProgramarRobot: Button
     private lateinit var labelNombre: TextView
     private lateinit var labelIP: TextView
 
@@ -73,11 +74,31 @@ class RobotMainActivity : AppCompatActivity() {
         // Evento de click en "IP"
         labelIP.setOnClickListener {
             showEditDialog("IP", textIp.text.toString()) { nuevaIp ->
-                textIp.text = nuevaIp
-                // Actualizar la base de datos con la nueva IP
-                actualizarRobotEnBD(nuevaIp = nuevaIp)
+                if (esIpValida(nuevaIp)) {
+                    textIp.text = nuevaIp
+                    actualizarRobotEnBD(nuevaIp = nuevaIp)
+                } else {
+                    Toast.makeText(this, "IP no válida. Introduce una IP válida (ej: 192.168.1.100)", Toast.LENGTH_LONG).show()
+                }
             }
         }
+
+        btnProgramarRobot = findViewById(R.id.buttonProgramas)
+        btnProgramarRobot.setOnClickListener {
+            val intent = Intent(this, RobotActivity::class.java)
+
+            intent.putExtra("id", id)
+            intent.putExtra("nombre", nombre)
+            intent.putExtra("wifi", wifi)
+            intent.putExtra("ip", ip)
+
+            startActivity(intent)
+        }
+    }
+
+    fun esIpValida(ip: String): Boolean {
+        val ipRegex = Regex("^((25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)\\.){3}(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)\$")
+        return ipRegex.matches(ip)
     }
 
     // Función para mostrar el cuadro de diálogo de edición
