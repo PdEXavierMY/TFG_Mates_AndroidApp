@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             if (ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 val results: List<ScanResult> = wifiManager.scanResults
-                val robots = results.filter { it.SSID.lowercase().contains("android") }
+                val robots = results.filter { it.SSID.lowercase().contains("niryo") }
                     .map { it.SSID }
 
                 val adapter = ArrayAdapter(this@MainActivity, android.R.layout.simple_list_item_1, robots)

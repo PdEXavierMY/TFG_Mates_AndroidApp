@@ -1,5 +1,6 @@
 package com.example.tfgmates.helpers
 
+import android.util.Log
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -22,6 +23,7 @@ object HttpHelper {
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace()
+                Log.e("HTTP_ERROR", "Falló la llamada HTTP: ${e.message}")
                 callback(null)
             }
 

@@ -13,7 +13,7 @@
         android:layout_width="756dp"
         android:layout_height="160dp"
         android:layout_marginTop="100dp"
-        android:text=""
+        android:text="Reporte localizado en el brazo robótico 3 de la línea 2. Le falla la pinza y le falta energía"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,6 +92,52 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             tools:ignore="SmallSp,TextSizeCheck" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/popupInforme"
+        android:layout_width="490dp"
+        android:layout_height="191dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginBottom="28dp"
+        android:background="@android:color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/textoPopupInforme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="¿Quieres enviar el informe?"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginTop="32dp">
+
+            <Button
+                android:id="@+id/btnRepetirInforme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:text="Repetir Incidencia" />
+
+            <Button
+                android:id="@+id/btnEnviarInforme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enviar Incidencia" />
+        </LinearLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

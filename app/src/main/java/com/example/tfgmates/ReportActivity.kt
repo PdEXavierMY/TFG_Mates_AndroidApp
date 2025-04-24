@@ -1,18 +1,28 @@
 package com.example.tfgmates
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetManager
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.transition.Visibility
+import com.example.tfgmates.helpers.HttpHelper
+import com.example.tfgmates.helpers.HttpHelper.sendHttpRequest
+import com.example.tfgmates.helpers.InternetHelper
 import org.json.JSONObject
 import org.vosk.Model
 import org.vosk.Recognizer
@@ -21,14 +31,19 @@ import org.vosk.android.SpeechService
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import kotlin.concurrent.thread
 
 class ReportActivity : AppCompatActivity() {
 
     private lateinit var micLayout: LinearLayout
     private lateinit var micIcon: ImageView
     private lateinit var micText: TextView
+    private lateinit var imageView: ImageView
     private lateinit var transcriptText: TextView
+    private lateinit var btnGenerarReporte: Button
+    private lateinit var btnTomarFoto: Button
+    private lateinit var btnRepetirIncidencia: Button
+    private lateinit var btnEnviarIncidencia: Button
+    private lateinit var popUpConfirmacion: LinearLayout
 
     private var model: Model? = null
     private var speechService: SpeechService? = null
@@ -36,7 +51,23 @@ class ReportActivity : AppCompatActivity() {
 
     companion object {
         private const val PERMISSIONS_REQUEST_RECORD_AUDIO = 1
-        private const val MODEL_FOLDER_NAME = "vosk-model-small-es-0.42"
+    }
+
+    private val REQUEST_ID = 123
+
+    private val cameraLauncher = registerForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val photo = result.data?.extras?.get("data") as? Bitmap
+            if (photo != null) {
+                imageView.setImageBitmap(photo)
+            } else {
+                Log.e("Camera", "No se pudo obtener la imagen completa")
+            }
+        } else {
+            Log.e("Camera", "No se obtuvo RESULT_OK")
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +79,12 @@ class ReportActivity : AppCompatActivity() {
         micIcon = findViewById(R.id.imageViewMic)
         micText = findViewById(R.id.textViewText)
         transcriptText = findViewById(R.id.textoReport)
+        btnGenerarReporte = findViewById(R.id.generarReporte)
+        btnTomarFoto = findViewById(R.id.tomarFoto)
+        imageView = findViewById(R.id.imagenCapturada)
+        popUpConfirmacion = findViewById(R.id.popupInforme)
+        btnRepetirIncidencia = findViewById(R.id.btnRepetirInforme)
+        btnEnviarIncidencia = findViewById(R.id.btnEnviarInforme)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
             != PackageManager.PERMISSION_GRANTED
@@ -67,6 +104,61 @@ class ReportActivity : AppCompatActivity() {
             } else {
                 startListening()
             }
+        }
+
+        btnGenerarReporte.setOnClickListener {
+            generarInforme()
+        }
+
+        btnTomarFoto.setOnClickListener {
+            launchCameraRawPhoto()
+        }
+
+        btnRepetirIncidencia.setOnClickListener {
+            transcriptText.text = ""
+            popUpConfirmacion.visibility = View.GONE
+        }
+
+        btnEnviarIncidencia.setOnClickListener {
+            enviarReporte()
+        }
+    }
+
+    private fun enviarReporte() {
+
+    }
+
+    private fun launchCameraRawPhoto() {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        cameraLauncher.launch(cameraIntent)
+    }
+
+    private fun generarInforme() {
+        val flowUrl = "https://prod-38.westus.logic.azure.com:443/workflows/6cbcc847b99c4ed4ba43ce6201d67b09/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=I6Wp8Xxe5_kVHZ1mzkBb3c5L4FtAclJTIhwdeypIXyY"
+
+        val nuevoMicTexto = transcriptText.text.toString()
+
+        if (InternetHelper.hayConexionInternet(this)) {
+            val jsonBody = JSONObject().apply {
+                put("industria", "Logística")
+                put("refinar", false)
+                put("micTexto", nuevoMicTexto)
+            }
+
+            sendHttpRequest(flowUrl, jsonBody) { response ->
+                runOnUiThread {
+                    if (response != null) {
+                        transcriptText.text = response.ifEmpty {
+                            "No se recibió ninguna incidencia."
+                        }
+                        popUpConfirmacion.visibility = View.VISIBLE
+                    } else {
+                        Toast.makeText(this, "Error en la solicitud HTTP", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        } else {
+            Toast.makeText(this, "Se requiere conexión a Internet para formalizar la incidencia", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -132,13 +224,9 @@ class ReportActivity : AppCompatActivity() {
             speechService = SpeechService(recognizer, 16000.0f)
             speechService?.startListening(object : RecognitionListener {
                 override fun onPartialResult(hypothesis: String?) {
-                    Log.d("VOSK_PARTIAL", hypothesis ?: "")
                 }
 
                 override fun onResult(hypothesis: String?) {
-                    runOnUiThread {
-                        transcriptText.text = hypothesis ?: ""
-                    }
                 }
 
                 override fun onFinalResult(hypothesis: String?) {
@@ -149,7 +237,7 @@ class ReportActivity : AppCompatActivity() {
                                 val texto = jsonObject.optString("text", "")
 
                                 if (texto.isNotEmpty()) {
-                                    transcriptText.append("$texto\n")
+                                    transcriptText.text = texto
                                 } else {
                                     Log.e("Vosk", "No se encontró la clave 'text' en la transcripción.")
                                 }

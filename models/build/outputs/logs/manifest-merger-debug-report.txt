@@ -1,16 +1,16 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest12723776749665487226.xml:2:13-83
-INJECTED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest12723776749665487226.xml:2:13-83
+ADDED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest17693647221363268371.xml:2:13-83
+INJECTED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest17693647221363268371.xml:2:13-83
 	package
-		INJECTED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest12723776749665487226.xml
+		INJECTED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest17693647221363268371.xml
 	xmlns:android
-		ADDED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest12723776749665487226.xml:2:23-81
+		ADDED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest17693647221363268371.xml:2:23-81
 uses-sdk
-INJECTED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest12723776749665487226.xml reason: use-sdk injection requested
-INJECTED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest12723776749665487226.xml
-INJECTED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest12723776749665487226.xml
+INJECTED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest17693647221363268371.xml reason: use-sdk injection requested
+INJECTED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest17693647221363268371.xml
+INJECTED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest17693647221363268371.xml
 	android:targetSdkVersion
-		INJECTED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest12723776749665487226.xml
+		INJECTED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest17693647221363268371.xml
 	android:minSdkVersion
-		INJECTED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest12723776749665487226.xml
+		INJECTED from C:\Users\j.miguelez.yague\AndroidStudioProjects\TFGMates\models\build\intermediates\tmp\ProcessLibraryManifest\debug\tempAndroidManifest17693647221363268371.xml
