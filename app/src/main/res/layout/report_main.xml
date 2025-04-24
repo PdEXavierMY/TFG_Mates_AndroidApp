@@ -13,7 +13,7 @@
         android:layout_width="756dp"
         android:layout_height="160dp"
         android:layout_marginTop="100dp"
-        android:text="Reporte localizado en el brazo robótico 3 de la línea 2. Le falla la pinza y le falta energía"
+        android:text=""
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -122,8 +122,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_marginTop="32dp">
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/btnRepetirInforme"
@@ -138,6 +137,12 @@
                 android:layout_height="wrap_content"
                 android:text="Enviar Incidencia" />
         </LinearLayout>
+        <Button
+            android:id="@+id/tomarFoto2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tomar Foto"
+            android:layout_marginTop="5dp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

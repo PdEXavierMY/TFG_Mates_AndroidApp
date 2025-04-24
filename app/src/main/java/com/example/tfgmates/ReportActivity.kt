@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.transition.Visibility
 import com.example.tfgmates.helpers.HttpHelper
 import com.example.tfgmates.helpers.HttpHelper.sendHttpRequest
+import com.example.tfgmates.helpers.ImageHelper
 import com.example.tfgmates.helpers.InternetHelper
 import org.json.JSONObject
 import org.vosk.Model
@@ -41,6 +42,8 @@ class ReportActivity : AppCompatActivity() {
     private lateinit var transcriptText: TextView
     private lateinit var btnGenerarReporte: Button
     private lateinit var btnTomarFoto: Button
+    private lateinit var btnTomarFoto2: Button
+    private lateinit var btnVolverAtras: Button
     private lateinit var btnRepetirIncidencia: Button
     private lateinit var btnEnviarIncidencia: Button
     private lateinit var popUpConfirmacion: LinearLayout
@@ -81,10 +84,12 @@ class ReportActivity : AppCompatActivity() {
         transcriptText = findViewById(R.id.textoReport)
         btnGenerarReporte = findViewById(R.id.generarReporte)
         btnTomarFoto = findViewById(R.id.tomarFoto)
+        btnTomarFoto2 = findViewById(R.id.tomarFoto2)
         imageView = findViewById(R.id.imagenCapturada)
         popUpConfirmacion = findViewById(R.id.popupInforme)
         btnRepetirIncidencia = findViewById(R.id.btnRepetirInforme)
         btnEnviarIncidencia = findViewById(R.id.btnEnviarInforme)
+        btnVolverAtras = findViewById(R.id.buttonAtras3)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
             != PackageManager.PERMISSION_GRANTED
@@ -107,10 +112,19 @@ class ReportActivity : AppCompatActivity() {
         }
 
         btnGenerarReporte.setOnClickListener {
-            generarInforme()
+            if (transcriptText.text != "") {
+                generarInforme()
+            }
+            else {
+                Toast.makeText(this, "Describa la incidencia", Toast.LENGTH_LONG).show()
+            }
         }
 
         btnTomarFoto.setOnClickListener {
+            launchCameraRawPhoto()
+        }
+
+        btnTomarFoto2.setOnClickListener {
             launchCameraRawPhoto()
         }
 
@@ -120,12 +134,63 @@ class ReportActivity : AppCompatActivity() {
         }
 
         btnEnviarIncidencia.setOnClickListener {
-            enviarReporte()
+            val drawable = imageView.drawable
+            val bitmap: Bitmap? = if (drawable is BitmapDrawable) {
+                drawable.bitmap
+            } else {
+                null
+            }
+            enviarReporte(bitmap, transcriptText.text.toString(), bitmap != null)
+        }
+
+        // Obtener los datos del Intent
+        val id = intent.getLongExtra("id", -1L)
+        val nombre = intent.getStringExtra("nombre") ?: ""
+        val wifi = intent.getStringExtra("wifi") ?: ""
+        val ip = intent.getStringExtra("ip") ?: ""
+
+        btnVolverAtras.setOnClickListener {
+            val intent = Intent(this, RobotMainActivity::class.java)
+            intent.putExtra("id", id)
+            intent.putExtra("nombre", nombre)
+            intent.putExtra("wifi", wifi)
+            intent.putExtra("ip", ip)
+
+            startActivity(intent)
         }
     }
 
-    private fun enviarReporte() {
+    private fun enviarReporte(bitmap: Bitmap?, informe: String, hayImagen: Boolean) {
+        val flowUrl = "https://prod-42.westus.logic.azure.com:443/workflows/8abd3b560d384864ab47f1a35ca72302/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=xRFA1exorXIpElcmfTErNTPj3JqII16CtO28KtJe-2A"
 
+        val imageBase64 = if (bitmap != null) {
+            ImageHelper.convertBitmapToBase64(bitmap)
+        } else {
+            ""
+        }
+
+        // Crear el JSON con los valores correctos
+        val jsonBody = JSONObject().apply {
+            put("informe", informe)
+            put("hayImagen", hayImagen)
+            put("imageBase64", imageBase64)
+            put("fileName", if (hayImagen) "CamaraFoto.jpeg" else "")
+            put("contentType", if (hayImagen) "image/jpeg" else "")
+        }
+
+        HttpHelper.sendHttpNotice(flowUrl, jsonBody) { success ->
+            runOnUiThread {
+                if (success) {
+                    Toast.makeText(this, "Reporte enviado exitosamente", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "Error al enviar el reporte", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        transcriptText.text = ""
+        imageView.setImageDrawable(null)
+        popUpConfirmacion.visibility = View.GONE
     }
 
     private fun launchCameraRawPhoto() {
