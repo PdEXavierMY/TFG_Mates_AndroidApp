@@ -10,6 +10,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.tfgmates.ReportActivity
 import com.example.tfgmates.bbdd.AppDatabase
 import kotlinx.coroutines.launch
 
@@ -17,6 +18,7 @@ class RobotMainActivity : AppCompatActivity() {
 
     private lateinit var btnIrAtras: Button
     private lateinit var btnProgramarRobot: Button
+    private lateinit var btnReportarIncidencia: Button
     private lateinit var labelNombre: TextView
     private lateinit var labelIP: TextView
 
@@ -86,6 +88,18 @@ class RobotMainActivity : AppCompatActivity() {
         btnProgramarRobot = findViewById(R.id.buttonProgramas)
         btnProgramarRobot.setOnClickListener {
             val intent = Intent(this, RobotActivity::class.java)
+
+            intent.putExtra("id", id)
+            intent.putExtra("nombre", nombre)
+            intent.putExtra("wifi", wifi)
+            intent.putExtra("ip", ip)
+
+            startActivity(intent)
+        }
+
+        btnReportarIncidencia = findViewById(R.id.buttonReportarIncidencia)
+        btnReportarIncidencia.setOnClickListener {
+            val intent = Intent(this, ReportActivity::class.java)
 
             intent.putExtra("id", id)
             intent.putExtra("nombre", nombre)
