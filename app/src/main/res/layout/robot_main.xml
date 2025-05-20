@@ -1,12 +1,34 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D9D8D8"
-    android:visibility="visible">
+    android:background="#F4F4F4"
+    android:visibility="visible"
+    tools:context=".RobotMainActivity">
 
+    <!-- Botón "Volver Inicio" -->
+    <Button
+        android:id="@+id/buttonAtras"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="#9E9E9E"
+        android:paddingLeft="20dp"
+        android:paddingTop="12dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="12dp"
+        android:text="Volver Inicio"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Tabla de información del robot -->
+
+    <!-- Imagen -->
     <LinearLayout
         android:id="@+id/layoutTabla"
         android:layout_width="match_parent"
@@ -23,7 +45,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingBottom="8dp">
 
             <TextView
                 android:id="@+id/headerId"
@@ -32,7 +55,8 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="ID"
-                android:textSize="20sp"
+                android:textColor="#333333"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -45,8 +69,9 @@
                 android:focusable="true"
                 android:gravity="center"
                 android:padding="8dp"
-                android:text="Nombre"
-                android:textSize="20sp"
+                android:text="NOMBRE"
+                android:textColor="#333333"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 tools:ignore="TouchTargetSizeCheck" />
 
@@ -56,8 +81,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Wifi"
-                android:textSize="20sp"
+                android:text="HOTSPOT"
+                android:textColor="#333333"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -71,16 +97,20 @@
                 android:gravity="center"
                 android:padding="8dp"
                 android:text="IP"
-                android:textSize="20sp"
+                android:textColor="#333333"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 tools:ignore="TouchTargetSizeCheck" />
         </LinearLayout>
 
+        <!-- Fila de datos -->
         <LinearLayout
             android:id="@+id/filaDatos"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="4dp"
+            android:paddingBottom="12dp">
 
             <TextView
                 android:id="@+id/textId"
@@ -89,7 +119,8 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text=""
-                android:textSize="20sp" />
+                android:textColor="#000000"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textNombre"
@@ -98,7 +129,8 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text=""
-                android:textSize="20sp" />
+                android:textColor="#000000"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textWifi"
@@ -107,7 +139,8 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text=""
-                android:textSize="20sp" />
+                android:textColor="#000000"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textIp"
@@ -116,60 +149,162 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text=""
-                android:textSize="20sp" />
+                android:textColor="#000000"
+                android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="249dp"
-        android:layout_height="188dp"
-        android:contentDescription="Imagen de brazo robótico"
+    <FrameLayout
+        android:id="@+id/imageContainer"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layoutTabla">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/robot_background" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="249dp"
+            android:layout_height="188dp"
+            android:layout_gravity="center"
+            android:contentDescription="Imagen de brazo robótico"
+            app:srcCompat="@drawable/robot" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/textAtributo1"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_rowWeight="1"
+        android:layout_columnWeight="1"
+        android:layout_marginStart="60dp"
+        android:layout_marginBottom="200dp"
+        android:background="@drawable/textview_digitaltwin_background"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="ESTADO: ADVERTENCIA"
+        android:textColor="#37474F"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageContainer"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textAtributo2"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_rowWeight="1"
+        android:layout_columnWeight="1"
+        android:layout_marginStart="60dp"
+        android:layout_marginBottom="124dp"
+        android:background="@drawable/textview_digitaltwin_background"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="EN FUNCIONAMIENTO: TRUE"
+        android:textColor="#37474F"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageContainer"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textAtributo3"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_rowWeight="1"
+        android:layout_columnWeight="1"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="124dp"
+        android:background="@drawable/textview_digitaltwin_background"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="PROGRAMA: PIEZAS VERDES"
+        android:textColor="#37474F"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.663"
-        app:srcCompat="@drawable/robot" />
+        app:layout_constraintStart_toEndOf="@+id/imageContainer" />
+
+    <TextView
+        android:id="@+id/textAtributo4"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_rowWeight="1"
+        android:layout_columnWeight="1"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="200dp"
+        android:background="@drawable/textview_digitaltwin_background"
+        android:gravity="center"
+        android:padding="12dp"
+        android:text="INFORMES GENERADOS: 1"
+        android:textColor="#37474F"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageContainer" />
 
     <Button
         android:id="@+id/buttonReportarIncidencia"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="220dp"
+        android:layout_height="55dp"
         android:layout_marginStart="60dp"
-        android:layout_marginBottom="45dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#455A64"
+        android:paddingLeft="20dp"
+        android:paddingTop="12dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="12dp"
         android:text="Reportar Incidencia"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/buttonAtras"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="40dp"
-        android:text="Volver Inicio"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/buttonEstadisticas"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:text="Ver Estadísticas"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/buttonProgramas"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="60dp"
-        android:layout_marginBottom="45dp"
+        android:layout_width="220dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="56dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#455A64"
+        android:paddingLeft="20dp"
+        android:paddingTop="12dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="12dp"
         android:text="Programar Robot"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/buttonEstadisticas"
+        android:layout_width="220dp"
+        android:layout_height="55dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#455A64"
+        android:paddingLeft="20dp"
+        android:paddingTop="12dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="12dp"
+        android:text="Ver Estadísticas"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.499"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

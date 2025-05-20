@@ -1,0 +1,7 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="#E3F2FD" /> <!-- Fondo celeste claro -->
+    <size android:width="300dp" android:height="300dp" />
+    <padding android:left="16dp" android:top="16dp" android:right="16dp" android:bottom="16dp"/>
+    <corners android:radius="150dp"/>
+    <stroke android:width="2dp" android:color="#90CAF9"/>
+</shape>
