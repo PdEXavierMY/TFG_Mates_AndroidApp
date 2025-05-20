@@ -172,39 +172,49 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val robots = withContext(Dispatchers.IO) { wifiDao.getAllWiFis() }
 
-            contenedorRobots.removeAllViews() // Limpiar antes de agregar
+            contenedorRobots.removeAllViews()
 
-            var rowLayout: LinearLayout? = null  // Layout horizontal actual
+            var rowLayout: LinearLayout? = null
             for ((index, robot) in robots.withIndex()) {
-                if (index % 3 == 0) { // Cada 3 robots, crear nueva fila
+                if (index % 2 == 0) {
                     rowLayout = LinearLayout(this@MainActivity).apply {
                         layoutParams = LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.WRAP_CONTENT
                         ).apply {
-                            setMargins(0, 20, 0, 20) // Margen entre filas
+                            setMargins(0, 20, 0, 20)
                         }
                         orientation = LinearLayout.HORIZONTAL
+                        gravity = Gravity.CENTER
                     }
-                    contenedorRobots.addView(rowLayout) // Agregar fila al contenedor
+                    contenedorRobots.addView(rowLayout)
                 }
 
                 val layoutItem = LinearLayout(this@MainActivity).apply {
                     layoutParams = LinearLayout.LayoutParams(
-                        0,  // Distribuir espacio equitativamente
+                        0,
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         1f
                     ).apply {
-                        if (index % 3 == 0) setMargins(60, 0, 0, 0) // Margen al primer robot de la fila
+                        setMargins(20, 0, 20, 0)
                     }
+
                     orientation = LinearLayout.VERTICAL
                     gravity = Gravity.CENTER
+                    setPadding(32, 32, 32, 32)
+                    background = ContextCompat.getDrawable(this@MainActivity, R.drawable.card_background)
+                    elevation = 12f
                 }
 
                 val imageView = ImageView(this@MainActivity).apply {
-                    layoutParams = LinearLayout.LayoutParams(200, 200)
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        240
+                    ).apply {
+                        bottomMargin = 16
+                    }
                     setImageResource(R.drawable.robot)
-                    scaleType = ImageView.ScaleType.CENTER_INSIDE
+                    scaleType = ImageView.ScaleType.FIT_CENTER
                 }
 
                 val textView = TextView(this@MainActivity).apply {
@@ -215,9 +225,10 @@ class MainActivity : AppCompatActivity() {
                     text = if (robot.nombre.isNotEmpty()) robot.nombre else robot.wifi
                     textSize = 18f
                     gravity = Gravity.CENTER
+                    setPadding(8, 0, 8, 0)
+                    setTextColor(ContextCompat.getColor(this@MainActivity, android.R.color.black))
                 }
 
-                // Evento al hacer clic en un robot
                 layoutItem.setOnClickListener {
                     val intent = Intent(this@MainActivity, RobotMainActivity::class.java).apply {
                         putExtra("id", robot.id)
@@ -230,7 +241,7 @@ class MainActivity : AppCompatActivity() {
 
                 layoutItem.addView(imageView)
                 layoutItem.addView(textView)
-                rowLayout?.addView(layoutItem) // Agregar item a la fila actual
+                rowLayout?.addView(layoutItem)
             }
         }
     }

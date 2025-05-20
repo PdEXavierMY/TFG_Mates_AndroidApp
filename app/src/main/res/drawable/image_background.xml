@@ -1,0 +1,5 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#F0F0F0"/>
+    <corners android:radius="90dp"/> <!-- Para hacerla circular si el tamaño es cuadrado -->
+</shape>
