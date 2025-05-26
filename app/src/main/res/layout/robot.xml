@@ -79,7 +79,7 @@
             android:layout_marginBottom="24dp">
 
             <Button
-                android:id="@+id/btnPrograma1"
+                android:id="@+id/btnRojo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -90,7 +90,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnPrograma2"
+                android:id="@+id/btnVerde"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -101,7 +101,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnPrograma3"
+                android:id="@+id/btnVideo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -112,7 +112,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnPrograma4"
+                android:id="@+id/btnReiniciarR"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -123,7 +123,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnPrograma5"
+                android:id="@+id/btnPararR"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
@@ -134,7 +134,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnPrograma6"
+                android:id="@+id/btnCalibrarR"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"

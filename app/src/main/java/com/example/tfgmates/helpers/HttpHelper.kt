@@ -58,4 +58,27 @@ object HttpHelper {
             }
         })
     }
+
+    fun getHttpText(url: String, callback: (String?) -> Unit) {
+        val client = OkHttpClient()
+
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+                Log.e("HTTP_ERROR", "Falló GET: ${e.message}")
+                callback(null)
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.string()?.let { responseData ->
+                    callback(responseData)
+                } ?: callback(null)
+            }
+        })
+    }
 }

@@ -8,9 +8,11 @@ import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.tfgmates.helpers.HttpHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.net.URL
 
 class RobotActivity : AppCompatActivity() {
@@ -22,12 +24,15 @@ class RobotActivity : AppCompatActivity() {
     private lateinit var btnPrograma3: Button
     private lateinit var btnCerrarPopup: Button
     private lateinit var btnMostrarPopup: Button
+    private lateinit var btnParar: Button
+    private lateinit var btnRestart: Button
+    private lateinit var btnCalibrar: Button
 
     private lateinit var logTextView: TextView
     private lateinit var logScrollView: ScrollView
     private lateinit var webView: WebView
 
-    private var ipRobot = ""
+    private var ipServer = "192.168.1.41"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,19 +42,25 @@ class RobotActivity : AppCompatActivity() {
         val id = intent.getLongExtra("id", -1L)
         val nombre = intent.getStringExtra("nombre") ?: ""
         val wifi = intent.getStringExtra("wifi") ?: ""
-        ipRobot = intent.getStringExtra("ip") ?: ""
+        val ip = intent.getStringExtra("ip") ?: ""
 
         btnIrAtras2 = findViewById(R.id.buttonAtras2)
         btnMostrarPopup = findViewById(R.id.buttonListaProgramas)
         popupInforme = findViewById(R.id.popupInforme)
-        btnPrograma1 = findViewById(R.id.btnPrograma1)
-        btnPrograma2 = findViewById(R.id.btnPrograma2)
-        btnPrograma3 = findViewById(R.id.btnPrograma3)
+        btnPrograma1 = findViewById(R.id.btnRojo)
+        btnPrograma2 = findViewById(R.id.btnVerde)
+        btnPrograma3 = findViewById(R.id.btnVideo)
         btnCerrarPopup = findViewById(R.id.btnCerrar2)
+        btnParar = findViewById(R.id.btnPararR)
+        btnRestart = findViewById(R.id.btnReiniciarR)
+        btnCalibrar = findViewById(R.id.btnCalibrarR)
 
         logTextView = findViewById(R.id.textLogs)
         logScrollView = findViewById(R.id.logScrollView)
         webView = findViewById(R.id.videoStreamView)
+
+        webView.settings.javaScriptEnabled = true
+        webView.webViewClient = WebViewClient()
 
         // Mostrar popup
         btnMostrarPopup.setOnClickListener {
@@ -67,31 +78,126 @@ class RobotActivity : AppCompatActivity() {
             intent.putExtra("id", id)
             intent.putExtra("nombre", nombre)
             intent.putExtra("wifi", wifi)
-            intent.putExtra("ip", ipRobot)
+            intent.putExtra("ip", ip)
             startActivity(intent)
+
+            webView.visibility = WebView.GONE
+            logScrollView.visibility = ScrollView.VISIBLE
+        }
+
+        btnPrograma1.setOnClickListener {
+            webView.visibility = WebView.GONE
+            logScrollView.visibility = ScrollView.VISIBLE
+            ejecutarPrograma("programa_base_rojo")
+        }
+
+        btnPrograma2.setOnClickListener {
+            webView.visibility = WebView.GONE
+            logScrollView.visibility = ScrollView.VISIBLE
+            ejecutarPrograma("programa_base_verde")
+        }
+
+        btnPrograma3.setOnClickListener {
+            popupInforme.visibility = LinearLayout.GONE
+            webView.visibility = WebView.VISIBLE
+            logScrollView.visibility = ScrollView.GONE
+
+            val videoUrl = "" // Reemplaza con la URL real del vídeo
+            webView.loadUrl(videoUrl)
+        }
+
+        btnParar.setOnClickListener {
+            webView.visibility = WebView.GONE
+            logScrollView.visibility = ScrollView.VISIBLE
+            enviarNotificacion("/parar")
+        }
+
+        btnRestart.setOnClickListener {
+            webView.visibility = WebView.GONE
+            logScrollView.visibility = ScrollView.VISIBLE
+            enviarPeticion("/restart")
+        }
+
+        btnCalibrar.setOnClickListener {
+            webView.visibility = WebView.GONE
+            logScrollView.visibility = ScrollView.VISIBLE
+            enviarPeticion("/calibrar")
         }
 
         // Iniciar la escucha de logs
         startLogFetching()
     }
 
+    private fun ejecutarPrograma(nombrePrograma: String) {
+        val url = "http://$ipServer:5000/ejecutar"
+        val json = JSONObject().apply {
+            put("programa", nombrePrograma)
+        }
+
+        HttpHelper.sendHttpRequest(url, json) { response ->
+            runOnUiThread {
+                popupInforme.visibility = LinearLayout.GONE
+                if (response != null) {
+                    logTextView.text = "Ejecutado: $nombrePrograma\nRespuesta: $response"
+                } else {
+                    logTextView.text = "Error al ejecutar $nombrePrograma"
+                }
+            }
+        }
+    }
+
+    private fun enviarPeticion(endpoint: String) {
+        val url = "http://$ipServer:5000$endpoint"
+        val json = JSONObject()
+
+        HttpHelper.sendHttpRequest(url, json) { response ->
+            runOnUiThread {
+                if (response != null) {
+                    logTextView.text = "Respuesta de $endpoint:\n$response"
+                } else {
+                    logTextView.text = "Error en $endpoint"
+                }
+            }
+        }
+    }
+
+    private fun enviarNotificacion(endpoint: String) {
+        val url = "http://$ipServer:5000$endpoint"
+        val json = JSONObject()
+
+        HttpHelper.sendHttpNotice(url, json) { success ->
+            runOnUiThread {
+                logTextView.text = if (success) {
+                    "Notificación $endpoint enviada con éxito"
+                } else {
+                    "Error al enviar notificación $endpoint"
+                }
+            }
+        }
+    }
+
     private fun startLogFetching() {
-        lifecycleScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch {
             while (true) {
-                try {
-                    val log = URL("http://$ipRobot:5000/logs/latest").readText() // Ruta en tu server Flask
-                    runOnUiThread {
-                        logTextView.text = log
-                        logScrollView.post {
-                            logScrollView.fullScroll(ScrollView.FOCUS_DOWN)
+                val url = "http://$ipServer:5000/logs/latest"
+                HttpHelper.getHttpText(url) { response ->
+                    if (response != null) {
+                        try {
+                            val json = JSONObject(response)
+                            val log = json.opt("log")
+                            if (log != null && log != false) {
+                                runOnUiThread {
+                                    logTextView.text = log.toString()
+                                }
+                            }
+                        } catch (e: Exception) {
+                            runOnUiThread {
+                                logTextView.text = "Error al analizar logs: ${e.message}"
+                            }
                         }
                     }
-                } catch (e: Exception) {
-                    runOnUiThread {
-                        logTextView.text = "Error al obtener logs: ${e.message}"
-                    }
                 }
-                delay(2000) // cada 2 segundos
+                delay(2000)
             }
         }
     }
