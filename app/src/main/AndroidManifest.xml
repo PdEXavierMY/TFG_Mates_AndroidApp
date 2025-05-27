@@ -33,6 +33,7 @@
         <activity android:name=".RobotMainActivity" />
         <activity android:name=".RobotActivity" />
         <activity android:name=".ReportActivity" />
+        <activity android:name=".DashboardActivity" />
     </application>
 
 </manifest>

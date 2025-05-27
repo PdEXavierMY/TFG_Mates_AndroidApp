@@ -19,6 +19,7 @@ class RobotMainActivity : AppCompatActivity() {
     private lateinit var btnIrAtras: Button
     private lateinit var btnProgramarRobot: Button
     private lateinit var btnReportarIncidencia: Button
+    private lateinit var btnEstadisticas: Button
     private lateinit var labelNombre: TextView
     private lateinit var labelIP: TextView
 
@@ -100,6 +101,18 @@ class RobotMainActivity : AppCompatActivity() {
         btnReportarIncidencia = findViewById(R.id.buttonReportarIncidencia)
         btnReportarIncidencia.setOnClickListener {
             val intent = Intent(this, ReportActivity::class.java)
+
+            intent.putExtra("id", id)
+            intent.putExtra("nombre", nombre)
+            intent.putExtra("wifi", wifi)
+            intent.putExtra("ip", ip)
+
+            startActivity(intent)
+        }
+
+        btnEstadisticas = findViewById(R.id.buttonEstadisticas)
+        btnEstadisticas.setOnClickListener {
+            val intent = Intent(this, DashboardActivity::class.java)
 
             intent.putExtra("id", id)
             intent.putExtra("nombre", nombre)
