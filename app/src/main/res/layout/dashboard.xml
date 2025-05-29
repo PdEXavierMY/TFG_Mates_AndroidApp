@@ -8,11 +8,12 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="733dp"
-        android:layout_height="382dp"
+        android:layout_width="730dp"
+        android:layout_height="320dp"
+        android:adjustViewBounds="true"
         android:background="@drawable/imageview_background"
         android:contentDescription="Gráfico actual"
-        android:scaleType="centerCrop"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.499"
@@ -25,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="25dp"
         android:backgroundTint="#9E9E9E"
         android:text="Volver Atrás"
         android:textColor="#FFFFFF"
@@ -81,7 +82,7 @@
         android:id="@+id/ListarGraficas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="25dp"
         android:layout_marginEnd="40dp"
         android:backgroundTint="#4CAF50"
         android:text="Mostrar Gráficos"
@@ -132,68 +133,68 @@
             android:layout_marginBottom="24dp">
 
             <Button
-                android:id="@+id/btnG1"
+                android:id="@+id/ejecucionesprograma"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
                 android:backgroundTint="#455A64"
-                android:text="Gráfico 1"
+                android:text="Ejecuciones por Programa"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnG2"
+                android:id="@+id/tiempomedio"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
                 android:backgroundTint="#455A64"
-                android:text="Gráfico 2"
+                android:text="(Media)Tiempo por Programa"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnG3"
+                android:id="@+id/actividaddiaria"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
                 android:backgroundTint="#455A64"
-                android:text="Gráfico 3"
+                android:text="(Porcentaje)Actividad diaria"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnG4"
+                android:id="@+id/erroresporcodigo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
                 android:backgroundTint="#455A64"
-                android:text="Gráfico 4"
+                android:text="Errores por Código"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnG5"
+                android:id="@+id/erroresporprograma"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
                 android:backgroundTint="#455A64"
-                android:text="Gráfico 5"
+                android:text="Errores por Programa"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnG6"
+                android:id="@+id/evoluciontiempo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
                 android:backgroundTint="#455A64"
-                android:text="Gráfico 6"
+                android:text="Actividad por Fecha"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold" />
         </GridLayout>

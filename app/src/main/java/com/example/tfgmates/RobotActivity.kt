@@ -89,12 +89,14 @@ class RobotActivity : AppCompatActivity() {
             webView.visibility = WebView.GONE
             logScrollView.visibility = ScrollView.VISIBLE
             ejecutarPrograma("programa_base_rojo")
+            popupInforme.visibility = LinearLayout.VISIBLE
         }
 
         btnPrograma2.setOnClickListener {
             webView.visibility = WebView.GONE
             logScrollView.visibility = ScrollView.VISIBLE
             ejecutarPrograma("programa_base_verde")
+            popupInforme.visibility = LinearLayout.VISIBLE
         }
 
         btnPrograma3.setOnClickListener {
@@ -104,24 +106,29 @@ class RobotActivity : AppCompatActivity() {
 
             val videoUrl = "" // Reemplaza con la URL real del vídeo
             webView.loadUrl(videoUrl)
+
+            popupInforme.visibility = LinearLayout.VISIBLE
         }
 
         btnParar.setOnClickListener {
             webView.visibility = WebView.GONE
             logScrollView.visibility = ScrollView.VISIBLE
             enviarNotificacion("/parar")
+            popupInforme.visibility = LinearLayout.VISIBLE
         }
 
         btnRestart.setOnClickListener {
             webView.visibility = WebView.GONE
             logScrollView.visibility = ScrollView.VISIBLE
             enviarPeticion("/restart")
+            popupInforme.visibility = LinearLayout.VISIBLE
         }
 
         btnCalibrar.setOnClickListener {
             webView.visibility = WebView.GONE
             logScrollView.visibility = ScrollView.VISIBLE
             enviarPeticion("/calibrar")
+            popupInforme.visibility = LinearLayout.VISIBLE
         }
 
         // Iniciar la escucha de logs
