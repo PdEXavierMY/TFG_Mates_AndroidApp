@@ -31,6 +31,8 @@ class RobotActivity : AppCompatActivity() {
     private lateinit var logTextView: TextView
     private lateinit var logScrollView: ScrollView
     private lateinit var webView: WebView
+    private var streamActivo = false
+
 
     private var ipServer = "192.168.1.41"
 
@@ -74,61 +76,80 @@ class RobotActivity : AppCompatActivity() {
 
         // Botón atrás
         btnIrAtras2.setOnClickListener {
+            webView.visibility = WebView.GONE
+            logScrollView.visibility = ScrollView.VISIBLE
+            if (streamActivo) {
+                pararStream()
+            }
+
             val intent = Intent(this, RobotMainActivity::class.java)
             intent.putExtra("id", id)
             intent.putExtra("nombre", nombre)
             intent.putExtra("wifi", wifi)
             intent.putExtra("ip", ip)
             startActivity(intent)
-
-            webView.visibility = WebView.GONE
-            logScrollView.visibility = ScrollView.VISIBLE
         }
 
         btnPrograma1.setOnClickListener {
             webView.visibility = WebView.GONE
             logScrollView.visibility = ScrollView.VISIBLE
+            if (streamActivo) {
+                pararStream()
+            }
             ejecutarPrograma("programa_base_rojo")
-            popupInforme.visibility = LinearLayout.VISIBLE
+            popupInforme.visibility = LinearLayout.GONE
         }
 
         btnPrograma2.setOnClickListener {
             webView.visibility = WebView.GONE
             logScrollView.visibility = ScrollView.VISIBLE
+            if (streamActivo) {
+                pararStream()
+            }
             ejecutarPrograma("programa_base_verde")
-            popupInforme.visibility = LinearLayout.VISIBLE
+            popupInforme.visibility = LinearLayout.GONE
         }
 
         btnPrograma3.setOnClickListener {
-            popupInforme.visibility = LinearLayout.GONE
+            // Marcar como activo
+            streamActivo = true
+            val videoUrl = "http://$ipServer:5000/video_feed"
+            webView.loadUrl(videoUrl)
             webView.visibility = WebView.VISIBLE
             logScrollView.visibility = ScrollView.GONE
-
-            val videoUrl = "" // Reemplaza con la URL real del vídeo
-            webView.loadUrl(videoUrl)
-
-            popupInforme.visibility = LinearLayout.VISIBLE
+            // Llamada al stream
+            enviarPeticion("/stream")
+            popupInforme.visibility = LinearLayout.GONE
         }
 
         btnParar.setOnClickListener {
             webView.visibility = WebView.GONE
             logScrollView.visibility = ScrollView.VISIBLE
+            if (streamActivo) {
+                pararStream()
+            }
             enviarNotificacion("/parar")
-            popupInforme.visibility = LinearLayout.VISIBLE
+            popupInforme.visibility = LinearLayout.GONE
         }
 
         btnRestart.setOnClickListener {
             webView.visibility = WebView.GONE
             logScrollView.visibility = ScrollView.VISIBLE
+            if (streamActivo) {
+                pararStream()
+            }
             enviarPeticion("/restart")
-            popupInforme.visibility = LinearLayout.VISIBLE
+            popupInforme.visibility = LinearLayout.GONE
         }
 
         btnCalibrar.setOnClickListener {
             webView.visibility = WebView.GONE
             logScrollView.visibility = ScrollView.VISIBLE
+            if (streamActivo) {
+                pararStream()
+            }
             enviarPeticion("/calibrar")
-            popupInforme.visibility = LinearLayout.VISIBLE
+            popupInforme.visibility = LinearLayout.GONE
         }
 
         // Iniciar la escucha de logs
@@ -205,6 +226,22 @@ class RobotActivity : AppCompatActivity() {
                     }
                 }
                 delay(2000)
+            }
+        }
+    }
+
+    private fun pararStream() {
+        val url = "http://$ipServer:5000/parar_stream"
+        val json = JSONObject()
+
+        HttpHelper.sendHttpRequest(url, json) { response ->
+            runOnUiThread {
+                if (response != null) {
+                    logTextView.text = "Stream detenido"
+                } else {
+                    logTextView.text = "Error al detener stream"
+                }
+                streamActivo = false
             }
         }
     }
