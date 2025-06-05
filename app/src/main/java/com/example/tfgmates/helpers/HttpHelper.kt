@@ -81,4 +81,33 @@ object HttpHelper {
             }
         })
     }
+
+    fun postFormUrlEncoded(url: String, params: Map<String, String>, callback: (String?) -> Unit) {
+        val client = OkHttpClient()
+
+        val formBodyBuilder = FormBody.Builder()
+        for ((key, value) in params) {
+            formBodyBuilder.add(key, value)
+        }
+        val formBody = formBodyBuilder.build()
+
+        val request = Request.Builder()
+            .url(url)
+            .post(formBody)
+            .addHeader("Content-Type", "application/x-www-form-urlencoded")
+            .build()
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+                callback(null)
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                response.body?.string()?.let {
+                    callback(it)
+                } ?: callback(null)
+            }
+        })
+    }
 }

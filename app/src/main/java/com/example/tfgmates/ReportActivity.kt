@@ -24,6 +24,8 @@ import com.example.tfgmates.helpers.HttpHelper
 import com.example.tfgmates.helpers.HttpHelper.sendHttpRequest
 import com.example.tfgmates.helpers.ImageHelper
 import com.example.tfgmates.helpers.InternetHelper
+import com.example.tfgmates.BuildConfig
+import com.example.tfgmates.helpers.DTHelper
 import org.json.JSONObject
 import org.vosk.Model
 import org.vosk.Recognizer
@@ -161,7 +163,7 @@ class ReportActivity : AppCompatActivity() {
     }
 
     private fun enviarReporte(bitmap: Bitmap?, informe: String, hayImagen: Boolean) {
-        val flowUrl = "https://prod-42.westus.logic.azure.com:443/workflows/8abd3b560d384864ab47f1a35ca72302/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=xRFA1exorXIpElcmfTErNTPj3JqII16CtO28KtJe-2A"
+        val flowUrl = BuildConfig.FLOW_GPT_URL
 
         val imageBase64 = if (bitmap != null) {
             ImageHelper.convertBitmapToBase64(bitmap)
@@ -199,8 +201,7 @@ class ReportActivity : AppCompatActivity() {
     }
 
     private fun generarInforme() {
-        val flowUrl = "https://prod-38.westus.logic.azure.com:443/workflows/6cbcc847b99c4ed4ba43ce6201d67b09/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=I6Wp8Xxe5_kVHZ1mzkBb3c5L4FtAclJTIhwdeypIXyY"
-
+        val flowUrl = BuildConfig.FLOW_REPORT_URL
         val nuevoMicTexto = transcriptText.text.toString()
 
         if (InternetHelper.hayConexionInternet(this)) {
@@ -217,6 +218,40 @@ class ReportActivity : AppCompatActivity() {
                             "No se recibió ninguna incidencia."
                         }
                         popUpConfirmacion.visibility = View.VISIBLE
+
+                        // Ahora actualizar informes del Digital Twin
+                        DTHelper.getAccessToken { token ->
+                            if (token == null) {
+                                runOnUiThread {
+                                    Toast.makeText(this, "Error al obtener token", Toast.LENGTH_LONG).show()
+                                }
+                                return@getAccessToken
+                            }
+
+                            DTHelper.getTwinData("Twin/RobotArm", token) { twinJson ->
+                                if (twinJson != null) {
+                                    val informesActuales = twinJson.optInt("informes", 0)
+                                    val nuevoValor = informesActuales + 1
+
+                                    val bodyPut = JSONObject().apply {
+                                        put("informes", nuevoValor)
+                                    }
+
+                                    DTHelper.putTwinData("Twin/RobotArm", bodyPut, token) { success ->
+                                        runOnUiThread {
+                                            if (!success) {
+                                                Toast.makeText(this, "No se pudo actualizar el número de informes", Toast.LENGTH_LONG).show()
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    runOnUiThread {
+                                        Toast.makeText(this, "No se pudo obtener datos del Twin", Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                            }
+                        }
+
                     } else {
                         Toast.makeText(this, "Error en la solicitud HTTP", Toast.LENGTH_LONG).show()
                     }

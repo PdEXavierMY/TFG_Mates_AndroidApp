@@ -2,6 +2,7 @@ package com.example.tfgmates
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -11,8 +12,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.tfgmates.ReportActivity
+import com.example.tfgmates.BuildConfig
 import com.example.tfgmates.bbdd.AppDatabase
+import com.example.tfgmates.helpers.DTHelper
+import com.example.tfgmates.helpers.HttpHelper
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.json.JSONObject
+import java.io.IOException
 
 class RobotMainActivity : AppCompatActivity() {
 
@@ -121,6 +129,8 @@ class RobotMainActivity : AppCompatActivity() {
 
             startActivity(intent)
         }
+
+        fetchTwinData()
     }
 
     fun esIpValida(ip: String): Boolean {
@@ -155,6 +165,38 @@ class RobotMainActivity : AppCompatActivity() {
                 if (nuevoNombre != null) it.nombre = nuevoNombre
                 if (nuevaIp != null) it.ip = nuevaIp
                 robotDao.update(it) // Actualizar la base de datos con los cambios
+            }
+        }
+    }
+
+    private fun fetchTwinData() {
+        DTHelper.getAccessToken { token ->
+            if (token == null) {
+                runOnUiThread {
+                    Toast.makeText(this, "Error al obtener el token", Toast.LENGTH_LONG).show()
+                }
+                return@getAccessToken
+            }
+
+            DTHelper.getTwinData("Twin/RobotArm", token) { json ->
+                if (json == null) {
+                    runOnUiThread {
+                        Toast.makeText(this, "Error al obtener datos del Twin", Toast.LENGTH_LONG).show()
+                    }
+                    return@getTwinData
+                }
+
+                val estado = json.getString("estado")
+                val funcionando = json.getBoolean("funcionando")
+                val informes = json.getInt("informes")
+                val programa = json.getString("programa")
+
+                runOnUiThread {
+                    findViewById<TextView>(R.id.textAtributo1).text = "ESTADO: $estado"
+                    findViewById<TextView>(R.id.textAtributo2).text = "EN FUNCIONAMIENTO: $funcionando"
+                    findViewById<TextView>(R.id.textAtributo3).text = "PROGRAMA: $programa"
+                    findViewById<TextView>(R.id.textAtributo4).text = "INFORMES GENERADOS: $informes"
+                }
             }
         }
     }

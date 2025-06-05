@@ -107,7 +107,7 @@
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
                 android:backgroundTint="#455A64"
-                android:text="Ver vídeo"
+                android:text="Acceder cámara"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold" />
 

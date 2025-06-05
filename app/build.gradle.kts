@@ -1,7 +1,15 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("kotlin-kapt")
+}
+
+val secretsFile = rootProject.file("secrets.properties")
+val secrets = Properties()
+if (secretsFile.exists()) {
+    secrets.load(secretsFile.inputStream())
 }
 
 android {
@@ -16,6 +24,14 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "TENANT_ID", "\"${secrets["TENANT_ID"]}\"")
+        buildConfigField("String", "CLIENT_ID", "\"${secrets["CLIENT_ID"]}\"")
+        buildConfigField("String", "CLIENT_SECRET", "\"${secrets["CLIENT_SECRET"]}\"")
+        buildConfigField("String", "API_CLIENT_ID", "\"${secrets["API_CLIENT_ID"]}\"")
+        buildConfigField("String", "API_URL", "\"${secrets["API_URL"]}\"")
+        buildConfigField("String", "FLOW_GPT_URL", "\"${secrets["FLOW_GPT_URL"]}\"")
+        buildConfigField("String", "FLOW_REPORT_URL", "\"${secrets["FLOW_REPORT_URL"]}\"")
     }
 
     buildTypes {
@@ -27,6 +43,11 @@ android {
             )
         }
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -55,6 +76,8 @@ dependencies {
     //Imagenes
     implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    //Corrutinas
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
