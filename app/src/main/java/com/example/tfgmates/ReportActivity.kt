@@ -58,8 +58,6 @@ class ReportActivity : AppCompatActivity() {
         private const val PERMISSIONS_REQUEST_RECORD_AUDIO = 1
     }
 
-    private val REQUEST_ID = 123
-
     private val cameraLauncher = registerForActivityResult(
         androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -163,7 +161,7 @@ class ReportActivity : AppCompatActivity() {
     }
 
     private fun enviarReporte(bitmap: Bitmap?, informe: String, hayImagen: Boolean) {
-        val flowUrl = BuildConfig.FLOW_GPT_URL
+        val flowUrl = BuildConfig.FLOW_REPORT_URL
 
         val imageBase64 = if (bitmap != null) {
             ImageHelper.convertBitmapToBase64(bitmap)
@@ -184,6 +182,39 @@ class ReportActivity : AppCompatActivity() {
             runOnUiThread {
                 if (success) {
                     Toast.makeText(this, "Reporte enviado exitosamente", Toast.LENGTH_LONG).show()
+
+                    // Ahora actualizar informes del Digital Twin
+                    DTHelper.getAccessToken { token ->
+                        if (token == null) {
+                            runOnUiThread {
+                                Toast.makeText(this, "Error al obtener token", Toast.LENGTH_LONG).show()
+                            }
+                            return@getAccessToken
+                        }
+
+                        DTHelper.getTwinData("Twin/RobotArm", token) { twinJson ->
+                            if (twinJson != null) {
+                                val informesActuales = twinJson.optInt("informes", 0)
+                                val nuevoValor = informesActuales + 1
+
+                                val bodyPut = JSONObject().apply {
+                                    put("informes", nuevoValor)
+                                }
+
+                                DTHelper.putTwinData("Twin/RobotArm", bodyPut, token) { success ->
+                                    runOnUiThread {
+                                        if (!success) {
+                                            Toast.makeText(this, "No se pudo actualizar el número de informes", Toast.LENGTH_LONG).show()
+                                        }
+                                    }
+                                }
+                            } else {
+                                runOnUiThread {
+                                    Toast.makeText(this, "No se pudo obtener datos del Twin", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        }
+                    }
                 } else {
                     Toast.makeText(this, "Error al enviar el reporte", Toast.LENGTH_LONG).show()
                 }
@@ -201,7 +232,7 @@ class ReportActivity : AppCompatActivity() {
     }
 
     private fun generarInforme() {
-        val flowUrl = BuildConfig.FLOW_REPORT_URL
+        val flowUrl = BuildConfig.FLOW_GPT_URL
         val nuevoMicTexto = transcriptText.text.toString()
 
         if (InternetHelper.hayConexionInternet(this)) {
@@ -218,39 +249,6 @@ class ReportActivity : AppCompatActivity() {
                             "No se recibió ninguna incidencia."
                         }
                         popUpConfirmacion.visibility = View.VISIBLE
-
-                        // Ahora actualizar informes del Digital Twin
-                        DTHelper.getAccessToken { token ->
-                            if (token == null) {
-                                runOnUiThread {
-                                    Toast.makeText(this, "Error al obtener token", Toast.LENGTH_LONG).show()
-                                }
-                                return@getAccessToken
-                            }
-
-                            DTHelper.getTwinData("Twin/RobotArm", token) { twinJson ->
-                                if (twinJson != null) {
-                                    val informesActuales = twinJson.optInt("informes", 0)
-                                    val nuevoValor = informesActuales + 1
-
-                                    val bodyPut = JSONObject().apply {
-                                        put("informes", nuevoValor)
-                                    }
-
-                                    DTHelper.putTwinData("Twin/RobotArm", bodyPut, token) { success ->
-                                        runOnUiThread {
-                                            if (!success) {
-                                                Toast.makeText(this, "No se pudo actualizar el número de informes", Toast.LENGTH_LONG).show()
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    runOnUiThread {
-                                        Toast.makeText(this, "No se pudo obtener datos del Twin", Toast.LENGTH_LONG).show()
-                                    }
-                                }
-                            }
-                        }
 
                     } else {
                         Toast.makeText(this, "Error en la solicitud HTTP", Toast.LENGTH_LONG).show()
