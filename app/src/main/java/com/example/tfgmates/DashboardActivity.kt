@@ -11,6 +11,10 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import java.net.URL
+import java.net.HttpURLConnection
+
 
 class DashboardActivity: AppCompatActivity() {
 
@@ -23,6 +27,7 @@ class DashboardActivity: AppCompatActivity() {
     private lateinit var btnGrafico5: Button
     private lateinit var btnGrafico6: Button
 
+    //private var ipServer = "192.168.32.134"
     private var ipServer = "192.168.1.41"
     private var serverport = "5000"
 
@@ -114,6 +119,33 @@ class DashboardActivity: AppCompatActivity() {
 
     private fun cargarGrafico(endpoint: String) {
         val url = "http://$ipServer:$serverport/$endpoint"
-        Glide.with(this).load(url).into(imgGrafico)
+
+        Thread {
+            try {
+                val connection = URL(url).openConnection() as HttpURLConnection
+                connection.connectTimeout = 1000
+                connection.readTimeout = 1000
+                connection.requestMethod = "HEAD"
+                connection.connect()
+                println("Conexión exitosa")
+
+                runOnUiThread {
+                    Glide.with(this)
+                        .load(url)
+                        .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                        .skipMemoryCache(false)
+                        .into(imgGrafico)
+                }
+            } catch (e: Exception) {
+                println("No se pudo establecer conexión con el servidor")
+                runOnUiThread {
+                    Glide.with(this)
+                        .load(url)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                        .onlyRetrieveFromCache(true)
+                        .into(imgGrafico)
+                }
+            }
+        }.start()
     }
 }

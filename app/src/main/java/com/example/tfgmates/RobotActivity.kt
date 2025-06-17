@@ -14,6 +14,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.net.URL
+import kotlinx.coroutines.Job
 
 class RobotActivity : AppCompatActivity() {
 
@@ -34,7 +35,9 @@ class RobotActivity : AppCompatActivity() {
     private var streamActivo = false
 
 
-    private var ipServer = "192.168.1.41"
+    private var ipServer = "192.168.32.134"
+
+    private var logJob: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +84,7 @@ class RobotActivity : AppCompatActivity() {
             if (streamActivo) {
                 pararStream()
             }
+            logJob?.cancel()
 
             val intent = Intent(this, RobotMainActivity::class.java)
             intent.putExtra("id", id)
@@ -205,7 +209,7 @@ class RobotActivity : AppCompatActivity() {
     }
 
     private fun startLogFetching() {
-        lifecycleScope.launch {
+        logJob = lifecycleScope.launch {
             while (true) {
                 val url = "http://$ipServer:5000/logs/latest"
                 HttpHelper.getHttpText(url) { response ->
@@ -225,7 +229,7 @@ class RobotActivity : AppCompatActivity() {
                         }
                     }
                 }
-                delay(2000)
+                delay(3000)
             }
         }
     }

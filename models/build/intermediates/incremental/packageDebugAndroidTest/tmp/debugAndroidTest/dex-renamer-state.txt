@@ -1,4 +1,4 @@
-#Fri Jun 06 11:42:31 CEST 2025
+#Thu Jun 12 13:48:55 CEST 2025
 base.0=C\:\\Users\\j.miguelez.yague\\AndroidStudioProjects\\TFGMates\\models\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\0\\classes.dex
 path.0=0/classes.dex
 renamed.0=classes.dex

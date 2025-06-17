@@ -189,7 +189,13 @@ class RobotMainActivity : AppCompatActivity() {
                 val estado = json.getString("estado")
                 val funcionando = json.getBoolean("funcionando")
                 val informes = json.getInt("informes")
-                val programa = json.getString("programa")
+                var programa = json.getString("programa")
+
+                programa = when {
+                    programa.contains("rojo", ignoreCase = true) -> "Pieza roja"
+                    programa.contains("verde", ignoreCase = true) -> "Pieza verde"
+                    else -> programa
+                }
 
                 runOnUiThread {
                     findViewById<TextView>(R.id.textAtributo1).text = "ESTADO: $estado"
